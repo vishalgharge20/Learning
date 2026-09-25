@@ -1,0 +1,82 @@
+export const seedBugs = [
+  {
+    id: 'bug-001',
+    subjectId: 'xr-qa',
+    title: 'XR Grab Interactable loses physics constraint on rapid flick release',
+    project: 'Project HoloSim Medical',
+    build: 'v0.9.4-rc2 (Build 412)',
+    device: 'Meta Quest 3',
+    platform: 'Standalone Android 12',
+    severity: 'Major',
+    priority: 'P1',
+    reproductionRate: '4/5 (80%)',
+    preconditions: 'User is in the Operating Theatre scene; Scalpel interactable is resting on instrument tray.',
+    steps: [
+      '1. Put on Meta Quest 3 headset and launch Medical Simulator build 412.',
+      '2. Teleport to the Operating Table and locate the Surgical Scalpel on the metal tray.',
+      '3. Grip the scalpel using the right controller grip trigger.',
+      '4. Perform a rapid flick of the wrist upwards and release the grip trigger at the apex of the motion.'
+    ],
+    expected: 'The scalpel should follow a realistic projectile parabolic arc based on the velocity curve buffer and land on the table or floor with gravity enabled.',
+    actual: 'The scalpel shoots infinitely upward through the ceiling geometry at supersonic velocity, vanishing from the scene completely.',
+    logs: '[Unity] XRGrabInteractable: Detaching from Direct Interactor (Right Hand)\n[Physics] Rigidbody.velocity exceeded limit: (142.8, 894.2, -310.4) on Scalpel_RigidBody\n[Unity] Scalpel transform position out of bounds: Y=1420.4m',
+    rootCause: 'In `XRGrabInteractable`, Throw Smoothing Mode was set to "None" and Velocity Scale was set to 4.5x instead of 1.0x. High polling rate (120Hz) on Quest 3 caused instantaneous velocity delta spike on single-frame release.',
+    resolution: 'Enabled `Smooth Velocity` on `XRGrabInteractable` with a 5-frame moving average sample window, clamped maximum linear velocity to 15 m/s, and set Velocity Scale to 1.0x.',
+    lessonsLearned: 'Always test VR throwing mechanics with both gentle releases and maximum violent wrist flicks at both 72Hz and 120Hz refresh rates.',
+    tags: ['Physics', 'XRInteractionToolkit', 'Throwing', 'Quest3'],
+    date: '2026-09-22'
+  },
+  {
+    id: 'bug-002',
+    subjectId: 'xr-qa',
+    title: 'Stereoscopic camera mismatch: Bloom shader renders in left eye only',
+    project: 'CyberRunner VR',
+    build: 'v1.2.0-b88',
+    device: 'Pico 4',
+    platform: 'Pico OS 5.9 (Android)',
+    severity: 'Critical',
+    priority: 'P0',
+    reproductionRate: '5/5 (100%)',
+    preconditions: 'Night city neon scene loaded with post-processing enabled.',
+    steps: [
+      '1. Deploy APK to Pico 4 and enter Level 2 (Neon Alley).',
+      '2. Stand near any glowing holographic billboard or neon sign.',
+      '3. Observe the light halo / bloom around bright emissive textures with both eyes open, then alternately close left and right eye.'
+    ],
+    expected: 'Emissive neon bloom glow renders stereoscopically with depth in both left and right eye viewports.',
+    actual: 'Bloom glow renders exclusively in the left eye screen. The right eye screen renders flat without any glow, creating intense binocular rivalry, eye strain, and headache within 15 seconds.',
+    logs: '[OpenXR] Active stereo rendering mode: Single-Pass Instanced (Multiview)\n[ShaderCompiler] Warning in CustomBloom.shader: Texture2DArray index not referenced in vertex stage for SV_RenderTargetArrayIndex.',
+    rootCause: 'Custom post-processing bloom shader was missing Unity\'s `UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX()` macro in the fragment shader pass, defaulting render target array slice to index 0 (Left Eye only).',
+    resolution: 'Updated post-process shader passes to declare `UNITY_DECLARE_VERTEX_OUTPUT_STEREO` and added `UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input)` at the start of the fragment function.',
+    lessonsLearned: 'Stereo eye rendering defects cause acute physiological discomfort. Always test custom shaders with alternate-eye closing checks during visual QA audits.',
+    tags: ['Shaders', 'SinglePassInstanced', 'Comfort', 'VisualArtifacts'],
+    date: '2026-09-23'
+  },
+  {
+    id: 'bug-003',
+    subjectId: 'xr-qa',
+    title: 'Memory leak in Passthrough texture buffer during scene reload causes OOM crash',
+    project: 'Spatial Architect MR',
+    build: 'v2.1.0-alpha',
+    device: 'Meta Quest Pro / Quest 3',
+    platform: 'Standalone Android',
+    severity: 'Critical',
+    priority: 'P0',
+    reproductionRate: '5/5 (100%)',
+    preconditions: 'App is running in Mixed Reality Passthrough mode.',
+    steps: [
+      '1. Launch Spatial Architect MR on Quest 3.',
+      '2. Open the project browser and open Project Room A.',
+      '3. Use in-game menu to return to Project Browser, then reopen Project Room A.',
+      '4. Repeat scene transition 4 times consecutively.'
+    ],
+    expected: 'Memory footprint remains stable between 1.2 GB and 1.4 GB across scene transitions.',
+    actual: 'RAM climbs by 320 MB on every scene load. On the 5th load, the app abruptly closes to the Meta Horizon OS home menu with a crash.',
+    logs: '[DEBUG] signal 9 (SIGKILL), code 1, process terminated by lowmemorykiller (LMK)\n[Unity] Native memory allocation failed: out of memory (Heap allocated: 3840 MB / 4096 MB limit)\n[OVRPlugin] Passthrough camera feed texture handle 0x8f2a10 leaked on SceneUnload.',
+    rootCause: 'The MR Passthrough manager subscribed to camera buffer feed textures on `Awake()` but failed to unsubscribe or call `Destroy()` on the camera render textures in `OnDestroy()`, leaving orphan 4K texture arrays in VRAM.',
+    resolution: 'Implemented explicit `Release()` and `DestroyImmediate()` calls in `OnDisable` on the Passthrough camera texture buffers.',
+    lessonsLearned: 'Add a 5x rapid scene reload stress test to every QA regression cycle to catch texture buffer and native VRAM leaks early.',
+    tags: ['MemoryLeak', 'Passthrough', 'Crash', 'OOM', 'ADB'],
+    date: '2026-09-24'
+  }
+];

@@ -1,0 +1,46 @@
+@use 'variables' as *;
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin card-surface {
+  background: $bg-card;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  transition: border-color $transition-fast, box-shadow $transition-fast, background-color $transition-fast;
+
+  &:hover {
+    border-color: $border-medium;
+  }
+}
+
+@mixin mono-code {
+  font-family: $font-family-mono;
+  font-size: 0.85rem;
+}
+
+@mixin custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $border-medium;
+    border-radius: $radius-full;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: $text-muted;
+  }
+}

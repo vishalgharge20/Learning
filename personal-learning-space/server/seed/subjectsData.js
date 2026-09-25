@@ -1,0 +1,72 @@
+export const seedSubjects = [
+  {
+    id: 'xr-qa',
+    title: 'XR QA',
+    subtitle: 'XR / AR / VR Quality Assurance',
+    description: 'Comprehensive engineering quality assurance curriculum for VR, AR, MR applications built with Unity, OpenXR, and Android standalone headsets.',
+    icon: 'RadarChartOutlined',
+    color: '#3b82f6',
+    status: 'active',
+    moduleCount: 24,
+    conceptCount: 142,
+    progress: 35,
+    lastStudiedTopic: 'Unity Profiler',
+    tags: ['XR', 'VR', 'AR', 'Unity', 'OpenXR', 'Performance', 'ADB']
+  },
+  {
+    id: 'playwright',
+    title: 'Playwright',
+    subtitle: 'Modern End-to-End Test Automation',
+    description: 'Robust, fast web automation in JavaScript covering fixtures, network interception, Page Object Model, and CI/CD pipelines.',
+    icon: 'CompassOutlined',
+    color: '#10b981',
+    status: 'coming_soon',
+    moduleCount: 12,
+    conceptCount: 68,
+    progress: 0,
+    lastStudiedTopic: null,
+    tags: ['Automation', 'Web', 'E2E', 'JavaScript', 'CI/CD']
+  },
+  {
+    id: 'python',
+    title: 'Python',
+    subtitle: 'Programming for Test Engineering',
+    description: 'Core Python language fundamentals, pytest framework, automation scripting, and test data generation.',
+    icon: 'CodeOutlined',
+    color: '#f59e0b',
+    status: 'coming_soon',
+    moduleCount: 14,
+    conceptCount: 82,
+    progress: 0,
+    lastStudiedTopic: null,
+    tags: ['Python', 'Automation', 'Pytest', 'Scripting']
+  },
+  {
+    id: 'javascript',
+    title: 'JavaScript',
+    subtitle: 'Modern JS & Asynchronous Deep-Dive',
+    description: 'Master closures, event loops, promises, async/await, DOM APIs, and modern ESNext features for automation.',
+    icon: 'ThunderboltOutlined',
+    color: '#eab308',
+    status: 'coming_soon',
+    moduleCount: 10,
+    conceptCount: 54,
+    progress: 0,
+    lastStudiedTopic: null,
+    tags: ['JavaScript', 'Async', 'Frontend', 'Runtime']
+  },
+  {
+    id: 'unity',
+    title: 'Unity',
+    subtitle: 'Engine Internals & C# for QA Engineers',
+    description: 'Understand GameObjects, Scene graph, lifecycle methods, physics engine, and render pipelines to debug effectively.',
+    icon: 'AppstoreOutlined',
+    color: '#8b5cf6',
+    status: 'coming_soon',
+    moduleCount: 16,
+    conceptCount: 96,
+    progress: 0,
+    lastStudiedTopic: null,
+    tags: ['Unity', 'GameDev', 'C#', 'Engine', '3D']
+  }
+];
